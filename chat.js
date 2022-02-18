@@ -16,26 +16,26 @@ class Connection {
     this.io = io;
 
     socket.on('getMessages', () => this.getMessages());
-    socket.on('message', (value) => this.handleMessage(value));
+    socket.on('message', (messageObject) => this.handleMessage(messageObject));
     socket.on('disconnect', () => this.disconnect());
     socket.on('connect_error', (err) => {
       console.log(`connect_error due to ${err.message}`);
     });
   }
   
-  sendMessage(message) {
-    this.io.sockets.emit('message', message);
+  sendMessage(obj) {
+    this.io.sockets.emit('message', obj);
   }
   
   getMessages() {
     messages.forEach((message) => this.sendMessage(message));
   }
 
-  handleMessage(value) {
+  handleMessage(obj) {
     const message = {
       id: uuidv4(),
-      user: users.get(this.socket) || defaultUser,
-      value,
+      user: obj.username,
+      value: obj.value,
       time: Date.now()
     };
 
